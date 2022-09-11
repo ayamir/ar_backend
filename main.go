@@ -1,16 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"time"
+	"ar_backend/database"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World! %s", time.Now())
-}
+const (
+	webport = "8080"
+)
 
 func main() {
-	http.HandleFunc("/", greet)
-	http.ListenAndServe(":8080", nil)
+	db, err := database.ConnectDB()
+	if err == nil {
+		err = database.CreateTable(db)
+		if err == nil {
+			router := gin.Default()
+			router.Run("localhost:" + webport)
+		}
+	}
 }
