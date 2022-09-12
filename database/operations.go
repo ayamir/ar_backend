@@ -10,7 +10,7 @@ import (
 
 const (
 	dbuser    = "ayamir"
-	dbpass    = "ayanamirei"
+	dbpass    = "ayamir"
 	hostname  = "127.0.0.1:3306"
 	DBName    = "person"
 	TableName = "info"
