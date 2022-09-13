@@ -54,10 +54,25 @@ func GetInfo(db *sql.DB, code string) *Info {
 	return info
 }
 
-func InsertInfo(db *sql.DB, info Info) {
+func InsertInfo(db *sql.DB, info Info) error {
 	_, err := db.Query("insert into "+table+" (code,name,motto,last_updated) value (?,?,?,now())",
 		info.Code, info.Name, info.Motto)
 	if err != nil {
 		log.Printf("Error %s when insert into table %s which %s\n", err, table, info.toString())
+		return err
+	} else {
+		return nil
+	}
+}
+
+func UpdateInfo(db *sql.DB, infoMotto InfoMotto) error {
+	_, err := db.Query("update " + table + " set motto='" +
+		infoMotto.Motto + "', last_updated=now()" +
+		" where code=" + infoMotto.Code)
+	if err != nil {
+		log.Printf("Error %s when update motto whose code = %s\n", err, infoMotto.Code)
+		return err
+	} else {
+		return nil
 	}
 }

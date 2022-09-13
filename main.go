@@ -19,9 +19,13 @@ func main() {
 		err = database.CreateTable(db)
 		if err == nil {
 			router := gin.Default()
+
 			router.GET("/infos", getInfos)
 			router.GET("/info/:code", getInfo)
+
 			router.POST("/info", insertInfo)
+			router.POST("/info/motto", updateInfo)
+
 			router.Run("localhost:" + webport)
 		}
 	}
@@ -77,3 +81,21 @@ func insertInfo(c *gin.Context) {
 	}
 }
 
+func updateInfo(c *gin.Context) {
+	db, err := database.ConnectDB()
+	if err == nil {
+		defer db.Close()
+
+		var infoMotto route.InfoMotto
+		if err = c.ShouldBindJSON(&infoMotto); err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+		} else {
+			err = route.UpdateInfo(db, infoMotto)
+			if err != nil {
+				c.AbortWithStatus(http.StatusInternalServerError)
+			} else {
+				c.IndentedJSON(http.StatusOK, infoMotto)
+			}
+		}
+	}
+}
