@@ -1,7 +1,7 @@
 # Requirement
 
-1. `go`
-2. `mysql`
+1. `go version >= 1.16`
+2. `mysql version >= 8.0`
 
 # How to run?
 
