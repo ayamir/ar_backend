@@ -64,11 +64,16 @@ func insertInfo(c *gin.Context) {
 		defer db.Close()
 
 		var info route.Info
-		if err := c.BindJSON(&info); err != nil {
+		if err = c.BindJSON(&info); err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
 		} else {
-			route.InsertInfo(db, info)
-			c.IndentedJSON(http.StatusCreated, info)
+			err = route.InsertInfo(db, info)
+			if err != nil {
+				c.AbortWithStatus(http.StatusInternalServerError)
+			} else {
+				c.IndentedJSON(http.StatusCreated, info)
+			}
 		}
 	}
 }
+
