@@ -5,6 +5,7 @@ import (
 	"ar_backend/route"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -19,6 +20,12 @@ func main() {
 		err = database.CreateTable(db)
 		if err == nil {
 			router := gin.Default()
+			router.Use(cors.New(cors.Config{
+				AllowOrigins: []string{"http://localhost", "http://10.112.79.143"},
+				AllowMethods: []string{"GET", "POST"},
+				AllowHeaders: []string{"Authorization", "Content-Type", "Upgrade", "Origin",
+					"Connection", "Accept-Encoding", "Accept-Language", "Host", "Access-Control-Request-Method", "Access-Control-Request-Headers"},
+			}))
 
 			router.GET("/infos", getInfos)
 			router.GET("/info/:code", getInfo)
