@@ -30,18 +30,11 @@ func ConnectDB() (*sql.DB, error) {
 	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelfunc()
 
-	res, err := db.ExecContext(ctx, "create database if not exists "+DBName)
+	_, err = db.ExecContext(ctx, "create database if not exists "+DBName)
 	if err != nil {
 		log.Printf("Error %s when create db %s\n", err, DBName)
 		return nil, err
 	}
-
-	no, err := res.RowsAffected()
-	if err != nil {
-		log.Printf("Error %s when fetching rows\n", err)
-		return nil, err
-	}
-	log.Printf("rows affected %d\n", no)
 
 	db.Close()
 	db, err = sql.Open("mysql", dsn(DBName))
@@ -58,7 +51,6 @@ func ConnectDB() (*sql.DB, error) {
 		log.Printf("Error %s pinging DB %s\n", err, DBName)
 		return nil, err
 	}
-	log.Printf("Connected to DB %s successfully\n", DBName)
 
 	return db, nil
 }
